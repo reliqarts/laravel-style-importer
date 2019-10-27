@@ -1,0 +1,58 @@
+{
+    "name": "reliqarts/laravel-style-importer",
+    "description": "Import used parts of external stylesheets into page/view as internal <style>.",
+    "keywords": [
+        "style",
+        "import",
+        "external",
+        "internal",
+        "stylesheet",
+        "laravel"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "reliq",
+            "email": "reliq@reliqarts.com"
+        }
+    ],
+    "require": {
+        "php": "^7.2",
+        "doctrine/common": "^2.11",
+        "illuminate/support": "^6.3",
+        "reliqarts/laravel-common": "^4.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^3.8|^4.0",
+        "phpro/grumphp": "^0.15.2",
+        "phpunit/phpunit": "^8.2",
+        "wearejust/grumphp-extra-tasks": "^2.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "ReliqArts\\StyleImporter\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ReliqArts\\StyleImporter\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "ReliqArts\\StyleImporter\\ServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    },
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
