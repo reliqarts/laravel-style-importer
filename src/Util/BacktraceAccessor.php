@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ReliqArts\StyleImporter\Util;
 
-final class BacktraceAccessor
+class BacktraceAccessor
 {
     private const KEY_CLASS = 'class';
     private const KEY_OBJECT = 'object';

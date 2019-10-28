@@ -10,7 +10,7 @@ use ReliqArts\StyleImporter\Exception\ActiveViewHtmlRetrievalFailed;
 use ReliqArts\StyleImporter\Exception\ActiveViewRetrievalFailed;
 use Throwable;
 
-final class ViewAccessor
+class ViewAccessor
 {
     private const ACTIVE_VIEW_POSITION = 2;
 
@@ -39,6 +39,7 @@ final class ViewAccessor
     /**
      * @param null|View $view
      *
+     * @throws ActiveViewHtmlRetrievalFailed
      * @return string
      */
     public function getViewHTML(?View $view = null): string
@@ -59,6 +60,7 @@ final class ViewAccessor
     }
 
     /**
+     * @throws ActiveViewRetrievalFailed
      * @return View
      */
     private function deriveActiveViewFromBacktrace(): View
