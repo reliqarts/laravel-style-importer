@@ -12,11 +12,13 @@ use ReliqArts\StyleImporter\HTML\ElementExtractor\PatternBasedExtractor;
  * Class PatternBasedExtractorTest.
  *
  * @coversDefaultClass \ReliqArts\StyleImporter\HTML\ElementExtractor\PatternBasedExtractor
+ *
+ * @internal
  */
 final class PatternBasedExtractorTest extends TestCase
 {
     /**
-     * @var PatternBasedExtractor|ObjectProphecy
+     * @var ObjectProphecy|PatternBasedExtractor
      */
     private $subject;
 
@@ -75,7 +77,7 @@ final class PatternBasedExtractorTest extends TestCase
                 ],
             ],
             'with strange characters' => [
-                '<span class="hel-o wo_rld" id="yo"></span>',
+                '<span class="hel-o wo_rld" id="yo" style="color: red"></span>',
                 [
                     '.hel-o',
                     '.wo_rld',
@@ -163,8 +165,8 @@ final class PatternBasedExtractorTest extends TestCase
     }
 
     /**
-     * @covers ::extractTags
      * @covers ::extractItemsByPattern
+     * @covers ::extractTags
      * @dataProvider extractTagsDataProvider
      *
      * @param string $html
@@ -264,7 +266,7 @@ final class PatternBasedExtractorTest extends TestCase
                     'span',
                     '#hel-owo_rld',
                     '#foo',
-                    '#a'
+                    '#a',
                 ],
             ],
         ];

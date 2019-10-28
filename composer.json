@@ -25,7 +25,7 @@
     },
     "require-dev": {
         "orchestra/testbench": "^3.8|^4.0",
-        "phpro/grumphp": "^0.15.2",
+        "phpro/grumphp": "^0.16.1",
         "phpunit/phpunit": "^8.2",
         "wearejust/grumphp-extra-tasks": "^2.2"
     },
