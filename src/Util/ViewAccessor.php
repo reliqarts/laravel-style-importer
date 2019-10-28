@@ -40,6 +40,7 @@ class ViewAccessor
      * @param null|View $view
      *
      * @throws ActiveViewHtmlRetrievalFailed
+     *
      * @return string
      */
     public function getViewHTML(?View $view = null): string
@@ -61,6 +62,7 @@ class ViewAccessor
 
     /**
      * @throws ActiveViewRetrievalFailed
+     *
      * @return View
      */
     private function deriveActiveViewFromBacktrace(): View

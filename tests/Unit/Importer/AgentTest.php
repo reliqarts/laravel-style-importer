@@ -15,14 +15,16 @@ use ReliqArts\StyleImporter\Util\FileAssistant;
 use ReliqArts\StyleImporter\Util\ViewAccessor;
 
 /**
- * Class AgentTest
+ * Class AgentTest.
  *
  * @coversDefaultClass \ReliqArts\StyleImporter\Importer\Agent
+ *
+ * @internal
  */
 final class AgentTest extends TestCase
 {
     /**
-     * @var ViewAccessor|ObjectProphecy
+     * @var ObjectProphecy|ViewAccessor
      */
     private $activeViewAccessor;
 
@@ -32,7 +34,7 @@ final class AgentTest extends TestCase
     private $htmlExtractor;
 
     /**
-     * @var RuleExtractor|ObjectProphecy
+     * @var ObjectProphecy|RuleExtractor
      */
     private $cssRuleExtractor;
 
@@ -42,7 +44,7 @@ final class AgentTest extends TestCase
     private $fileAssistant;
 
     /**
-     * @var RuleSet|ObjectProphecy
+     * @var ObjectProphecy|RuleSet
      */
     private $ruleSet;
 

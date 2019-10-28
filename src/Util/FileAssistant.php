@@ -7,6 +7,7 @@ namespace ReliqArts\StyleImporter\Util;
 class FileAssistant
 {
     /**
+     * @codeCoverageIgnore
      * @param string $path
      *
      * @return string

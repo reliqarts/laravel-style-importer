@@ -12,6 +12,8 @@ class BacktraceAccessor
     private const NO_OBJECT = '**NO_OBJECT**';
 
     /**
+     * @codeCoverageIgnore
+     *
      * @param int    $position Position (n)
      * @param string $type     Object
      *

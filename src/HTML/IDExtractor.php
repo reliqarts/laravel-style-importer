@@ -11,5 +11,5 @@ interface IDExtractor
      *
      * @return string[]
      */
-    public function extractIDs(string $html): array;
+    public function extractIds(string $html): array;
 }

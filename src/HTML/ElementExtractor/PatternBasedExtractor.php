@@ -8,9 +8,9 @@ use ReliqArts\StyleImporter\HTML\ElementExtractor;
 
 final class PatternBasedExtractor implements ElementExtractor
 {
-    private const PATTERN_CLASSES = '#\<[a-z][\w\s]+\sclass=[\"\\\']([A-za-z\s]+)[\"\\\'][\s\>\/]\>?#';
-    private const PATTERN_IDS = '#\<[a-z][\w\s]+\sid=[\"\\\']([A-za-z]+)[\"\\\'][\s\>\/]\>?#';
-    private const PATTERN_TAGS = '#\<([a-z]+)[\s\>]#';
+    private const PATTERN_CLASSES = '#\<\w[^<>]*\sclass=[\"\\\']([\w\s-]+)[\"\\\'][\s\>\/]#';
+    private const PATTERN_IDS = '#\<\w[^<>]*\sid=[\"\\\']([\w-]+)[\"\\\'][\s\>\/]\>?#';
+    private const PATTERN_TAGS = '#\<([\w-]+)[\s\>]#';
 
     /**
      * @param string $html
@@ -41,7 +41,7 @@ final class PatternBasedExtractor implements ElementExtractor
      *
      * @return string[]
      */
-    public function extractIDs(string $html): array
+    public function extractIds(string $html): array
     {
         $idNames = $this->extractItemsByPattern($html, self::PATTERN_IDS);
 
@@ -74,7 +74,7 @@ final class PatternBasedExtractor implements ElementExtractor
     {
         return array_merge(
             $this->extractTags($html),
-            $this->extractIDs($html),
+            $this->extractIds($html),
             $this->extractClasses($html)
         );
     }

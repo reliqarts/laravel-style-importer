@@ -7,6 +7,11 @@ namespace ReliqArts\StyleImporter\Util;
 use ReliqArts\Contracts\ConfigProvider as ConfigAccessor;
 use ReliqArts\StyleImporter\ConfigProvider;
 
+/**
+ * Class Config
+ *
+ * @codeCoverageIgnore
+ */
 final class Config implements ConfigProvider
 {
     private const CONFIG_KEY_VARIABLE_NAME_CURRENT_VIEW_NAME = 'variable_names.current_view_name';
