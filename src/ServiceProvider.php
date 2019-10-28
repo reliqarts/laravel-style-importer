@@ -20,7 +20,9 @@ use ReliqArts\StyleImporter\Importer\Agent;
 use ReliqArts\StyleImporter\Util\Config;
 
 /**
- *  Guided Image Service Provider.
+ * Guided Image Service Provider.
+ *
+ * @codeCoverageIgnore
  */
 final class ServiceProvider extends ReliqArtsServiceProvider
 {
