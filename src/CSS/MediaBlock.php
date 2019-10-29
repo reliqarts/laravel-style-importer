@@ -66,7 +66,7 @@ final class MediaBlock
             'trim',
             explode(MediaBlock::TOKEN_OPENING_BRACKET, $block, 2)
         );
-        $styles = substr($stylesWithTrailingBracket, 0, -1);
+        $styles = trim(substr($stylesWithTrailingBracket, 0, -1));
 
         return new self($mediaQuery, $styles, $block);
     }
