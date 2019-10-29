@@ -20,6 +20,6 @@ final class Rules extends ArrayCollection implements RuleSet
      */
     public function __toString(): string
     {
-        return implode(' ', $this->toArray());
+        return implode("\n", $this->toArray());
     }
 }
