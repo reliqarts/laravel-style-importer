@@ -116,11 +116,15 @@ final class PatternBasedRuleExtractor implements RuleExtractor
             $properties = $matches[self::MATCH_GROUP_KEY_PROPERTIES];
 
             foreach ($selectors as $index => $selector) {
-                $rules[] = Rule::createNormalized(
+                $rule = Rule::createNormalized(
                     $selector,
                     $properties[$index],
                     $mediaQuery
                 );
+
+                if (!in_array($rule, $rules, true)) {
+                    $rules[] = $rule;
+                }
             }
         }
 
