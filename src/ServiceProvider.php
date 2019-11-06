@@ -7,17 +7,25 @@ namespace ReliqArts\StyleImporter;
 use Illuminate\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\View\Factory as ViewFactory;
 use Illuminate\Contracts\View\View;
+use Monolog\Handler\StreamHandler;
+use ReliqArts\Contracts\Logger as ReliqArtsLoggerContract;
 use ReliqArts\ServiceProvider as ReliqArtsServiceProvider;
 use ReliqArts\Services\ConfigProvider as ReliqArtsConfigProvider;
-use ReliqArts\StyleImporter\CSS\Extractor\PatternBasedRuleExtractor as PatterBasedRuleExtractor;
-use ReliqArts\StyleImporter\CSS\RuleExtractor;
+use ReliqArts\Services\Logger as ReliqArtsLogger;
+use ReliqArts\StyleImporter\CSS\Extractor\ImportExtractor;
+use ReliqArts\StyleImporter\CSS\Extractor\MediaBlockExtractor;
+use ReliqArts\StyleImporter\CSS\Generator as GeneratorContract;
+use ReliqArts\StyleImporter\CSS\Generator\RuleSetGenerator as RuleSetGenerator;
+use ReliqArts\StyleImporter\CSS\Processor as ProcessorContract;
+use ReliqArts\StyleImporter\CSS\Processor\Processor;
 use ReliqArts\StyleImporter\HTML\ClassExtractor;
-use ReliqArts\StyleImporter\HTML\ElementExtractor;
-use ReliqArts\StyleImporter\HTML\ElementExtractor\PatternBasedExtractor as PatternBasedHTMLExtractor;
+use ReliqArts\StyleImporter\HTML\Extractor;
+use ReliqArts\StyleImporter\HTML\Extractor\PatternBasedExtractor as PatternBasedHTMLExtractor;
 use ReliqArts\StyleImporter\HTML\IDExtractor;
 use ReliqArts\StyleImporter\HTML\TagExtractor;
 use ReliqArts\StyleImporter\Importer\Agent;
 use ReliqArts\StyleImporter\Util\Config;
+use ReliqArts\StyleImporter\Util\Logger as LoggerContract;
 
 /**
  * Guided Image Service Provider.
@@ -56,13 +64,34 @@ final class ServiceProvider extends ReliqArtsServiceProvider
         $this->app->singleton(ClassExtractor::class, PatternBasedHTMLExtractor::class);
         $this->app->singleton(IDExtractor::class, PatternBasedHTMLExtractor::class);
         $this->app->singleton(TagExtractor::class, PatternBasedHTMLExtractor::class);
-        $this->app->singleton(ElementExtractor::class, PatternBasedHTMLExtractor::class);
-        $this->app->singleton(RuleExtractor::class, PatterBasedRuleExtractor::class);
+        $this->app->singleton(Extractor::class, PatternBasedHTMLExtractor::class);
+        $this->app->singleton(GeneratorContract::class, RuleSetGenerator::class);
         $this->app->singleton(Importer::class, Agent::class);
         $this->app->singleton(
             ConfigProvider::class,
             function (): ConfigProvider {
                 return $this->configProvider;
+            }
+        );
+        $this->app->singleton(
+            ProcessorContract::class,
+            function (): ProcessorContract {
+                return new Processor(
+                    resolve(ImportExtractor::class),
+                    resolve(MediaBlockExtractor::class),
+                    resolve(GeneratorContract::class),
+                    resolve(LoggerContract::class)
+                );
+            }
+        );
+        $this->app->singleton(
+            LoggerContract::class,
+            function (): ReliqArtsLoggerContract {
+                $logger = new ReliqArtsLogger($this->getLoggerName());
+                $logFile = storage_path(sprintf('logs/%s.log', self::LOG_FILENAME));
+                $logger->pushHandler(new StreamHandler($logFile, ReliqArtsLogger::DEBUG));
+
+                return $logger;
             }
         );
     }

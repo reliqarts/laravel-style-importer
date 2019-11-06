@@ -2,16 +2,17 @@
 
 declare(strict_types=1);
 
-namespace ReliqArts\StyleImporter\CSS\Extractor;
+namespace ReliqArts\StyleImporter\CSS\Generator;
 
-use ReliqArts\StyleImporter\CSS\Exception\RuleExtractionFailed;
-use ReliqArts\StyleImporter\CSS\Rule;
-use ReliqArts\StyleImporter\CSS\RuleExtractor;
+use Exception;
+use ReliqArts\StyleImporter\CSS\Exception\RulesetGenerationFailed;
+use ReliqArts\StyleImporter\CSS\Generator;
+use ReliqArts\StyleImporter\CSS\Rule\Rule;
 use ReliqArts\StyleImporter\CSS\Rules;
-use ReliqArts\StyleImporter\CSS\RuleSet;
-use ReliqArts\StyleImporter\Exception\InvalidArgument;
+use ReliqArts\StyleImporter\CSS\Ruleset;
+use ReliqArts\StyleImporter\CSS\Util\Sanitizer;
 
-final class PatternBasedRuleExtractor implements RuleExtractor
+final class RuleSetGenerator implements Generator
 {
     private const RULE_PATTERN_TEMPLATE = '(?<selector>[^}{,]*%s%s[\s:.,][^{,]*)[^{]*\{(?<properties>[^}]++)\}';
     private const DELIMITED_RULE_PATTERN_TEMPLATE = '%s' . self::RULE_PATTERN_TEMPLATE . '%s';
@@ -22,36 +23,23 @@ final class PatternBasedRuleExtractor implements RuleExtractor
     private const MATCH_GROUP_KEY_PROPERTIES = 2;
 
     /**
-     * @var MediaBlockExtractor
-     */
-    private $mediaBlockExtractor;
-
-    /**
-     * PatternBasedRuleExtractor constructor.
+     * @param Context $context
      *
-     * @param MediaBlockExtractor $mediaBlockExtractor
+     * @throws RulesetGenerationFailed
+     *
+     * @return Ruleset
      */
-    public function __construct(MediaBlockExtractor $mediaBlockExtractor)
+    public function generate(Context $context): Ruleset
     {
-        $this->mediaBlockExtractor = $mediaBlockExtractor;
-    }
+        $htmlElements = $context->getHtmlElements();
 
-    /**
-     * @param string   $styles
-     * @param string[] $htmlElements
-     *
-     * @throws RuleExtractionFailed
-     *
-     * @return RuleSet
-     */
-    public function extractRules(string $styles, array $htmlElements): RuleSet
-    {
         try {
-            $mediaBlocks = $this->mediaBlockExtractor->extract($styles);
-            $sanitizedStyles = $this->sanitizeStyles($this->removeMediaBlocks($styles, $mediaBlocks));
-            $rules = $this->getRulesForElements($htmlElements, $sanitizedStyles);
+            $rules = array_merge(
+                $context->getImportRules(),
+                $this->getRulesForElements($htmlElements, $context->getSanitizedStyles())
+            );
 
-            foreach ($mediaBlocks as $mediaBlock) {
+            foreach ($context->getMediaBlocks() as $mediaBlock) {
                 $mediaBlockRules = $this->getRulesForElements(
                     $htmlElements,
                     $mediaBlock->getStyles(),
@@ -64,24 +52,13 @@ final class PatternBasedRuleExtractor implements RuleExtractor
             }
 
             return new Rules($rules);
-        } catch (InvalidArgument $exception) {
-            throw new RuleExtractionFailed(
-                'Failed to extract rules.',
+        } catch (Exception $exception) {
+            throw new RulesetGenerationFailed(
+                sprintf('Failed to generate rules. %s', $exception->getMessage()),
                 $exception->getCode(),
                 $exception
             );
         }
-    }
-
-    /**
-     * @param string $styles
-     * @param array  $mediaBlocks
-     *
-     * @return string
-     */
-    private function removeMediaBlocks(string $styles, array $mediaBlocks): string
-    {
-        return str_replace($mediaBlocks, '', $styles);
     }
 
     /**
@@ -96,7 +73,7 @@ final class PatternBasedRuleExtractor implements RuleExtractor
         $rules = [];
 
         foreach ($htmlElements as $element) {
-            $sanitizedElement = $this->sanitizeElement($element);
+            $sanitizedElement = Sanitizer::sanitizeElementName($element);
             $preElementCharacterSet = $this->getElementPreCharacterSet($element);
             $pattern = sprintf(
                 self::DELIMITED_RULE_PATTERN_TEMPLATE,
@@ -136,16 +113,6 @@ final class PatternBasedRuleExtractor implements RuleExtractor
      *
      * @return string
      */
-    private function sanitizeElement(string $element): string
-    {
-        return str_replace('.', '\.', str_replace('#', '\#', $element));
-    }
-
-    /**
-     * @param string $element
-     *
-     * @return string
-     */
     private function getElementPreCharacterSet(string $element): string
     {
         if (in_array($element[0], ['.', '#'], true)) {
@@ -153,26 +120,5 @@ final class PatternBasedRuleExtractor implements RuleExtractor
         }
 
         return self::PRE_TAG_CHARACTER_SET;
-    }
-
-    /**
-     * @param string $styles
-     *
-     * @return string
-     *
-     * @see https://www.regextester.com/94246 Adapted from
-     */
-    private function sanitizeStyles(string $styles): string
-    {
-        $replacements = [
-            '/{/' => ' {',
-            '/\/\*[\s\S]*?\*\/|([^:]|^)\/\/.*$/' => '',
-        ];
-
-        return preg_replace(
-            array_keys($replacements),
-            array_values($replacements),
-            sprintf("\n%s", $styles)
-        );
     }
 }

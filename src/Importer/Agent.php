@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace ReliqArts\StyleImporter\Importer;
 
-use ReliqArts\StyleImporter\CSS\Exception\RuleExtractionFailed;
-use ReliqArts\StyleImporter\CSS\RuleExtractor;
-use ReliqArts\StyleImporter\CSS\RuleSet;
+use ReliqArts\StyleImporter\CSS\Exception\RulesetGenerationFailed;
+use ReliqArts\StyleImporter\CSS\Processor;
+use ReliqArts\StyleImporter\CSS\Ruleset;
 use ReliqArts\StyleImporter\Exception\ActiveViewHtmlRetrievalFailed;
-use ReliqArts\StyleImporter\HTML\ElementExtractor;
+use ReliqArts\StyleImporter\HTML\Extractor;
 use ReliqArts\StyleImporter\Importer;
 use ReliqArts\StyleImporter\Util\FileAssistant;
 use ReliqArts\StyleImporter\Util\ViewAccessor;
@@ -23,14 +23,14 @@ final class Agent implements Importer
     private $activeViewAccessor;
 
     /**
-     * @var ElementExtractor
+     * @var Extractor
      */
     private $htmlExtractor;
 
     /**
-     * @var RuleExtractor
+     * @var Processor
      */
-    private $cssRuleExtractor;
+    private $cssProcessor;
 
     /**
      * @var FileAssistant
@@ -40,20 +40,20 @@ final class Agent implements Importer
     /**
      * Importer constructor.
      *
-     * @param ViewAccessor     $activeViewAccessor
-     * @param ElementExtractor $htmlExtractor
-     * @param RuleExtractor    $ruleExtractor
-     * @param FileAssistant    $fileAssistant
+     * @param ViewAccessor  $activeViewAccessor
+     * @param Extractor     $htmlExtractor
+     * @param Processor     $cssProcessor
+     * @param FileAssistant $fileAssistant
      */
     public function __construct(
         ViewAccessor $activeViewAccessor,
-        ElementExtractor $htmlExtractor,
-        RuleExtractor $ruleExtractor,
+        Extractor $htmlExtractor,
+        Processor $cssProcessor,
         FileAssistant $fileAssistant
     ) {
         $this->activeViewAccessor = $activeViewAccessor;
         $this->htmlExtractor = $htmlExtractor;
-        $this->cssRuleExtractor = $ruleExtractor;
+        $this->cssProcessor = $cssProcessor;
         $this->fileAssistant = $fileAssistant;
     }
 
@@ -61,26 +61,26 @@ final class Agent implements Importer
      * @param string $stylesheetUrl
      *
      * @throws ActiveViewHtmlRetrievalFailed
-     * @throws RuleExtractionFailed
+     * @throws RulesetGenerationFailed
      *
      * @return string
      */
     public function import(string $stylesheetUrl): string
     {
         $viewHtml = $this->activeViewAccessor->getViewHTML();
-        $elements = $this->htmlExtractor->extractElements($viewHtml);
+        $elements = $this->htmlExtractor->extract($viewHtml);
         $stylesheet = $this->fileAssistant->getFileContents($stylesheetUrl);
-        $cssRules = $this->cssRuleExtractor->extractRules($stylesheet, $elements);
+        $cssRules = $this->cssProcessor->getStyles($stylesheet, ...$elements);
 
         return $this->wrapImportedStyles($cssRules);
     }
 
     /**
-     * @param RuleSet $styles
+     * @param Ruleset $styles
      *
      * @return string
      */
-    private function wrapImportedStyles(RuleSet $styles): string
+    private function wrapImportedStyles(Ruleset $styles): string
     {
         return sprintf(self::STYLE_TAG_TEMPLATE, $styles);
     }

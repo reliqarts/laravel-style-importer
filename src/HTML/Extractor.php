@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ReliqArts\StyleImporter\HTML;
 
-interface ElementExtractor extends ClassExtractor, IDExtractor, TagExtractor
+interface Extractor extends ClassExtractor, IDExtractor, TagExtractor
 {
     /**
      * Extract elements of interest from HTML.
@@ -14,5 +14,5 @@ interface ElementExtractor extends ClassExtractor, IDExtractor, TagExtractor
      *
      * @return array
      */
-    public function extractElements(string $html): array;
+    public function extract(string $html): array;
 }

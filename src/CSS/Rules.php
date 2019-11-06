@@ -11,7 +11,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  *
  * @method Rule[] getIterator()
  */
-final class Rules extends ArrayCollection implements RuleSet
+final class Rules extends ArrayCollection implements Ruleset
 {
     /**
      * {@inheritdoc}

@@ -6,12 +6,12 @@ namespace ReliqArts\StyleImporter\Tests\Unit\HTML\ElementExtractor;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
-use ReliqArts\StyleImporter\HTML\ElementExtractor\PatternBasedExtractor;
+use ReliqArts\StyleImporter\HTML\Extractor\PatternBasedExtractor;
 
 /**
  * Class PatternBasedExtractorTest.
  *
- * @coversDefaultClass \ReliqArts\StyleImporter\HTML\ElementExtractor\PatternBasedExtractor
+ * @coversDefaultClass \ReliqArts\StyleImporter\HTML\Extractor\PatternBasedExtractor
  *
  * @internal
  */
@@ -216,7 +216,7 @@ final class PatternBasedExtractorTest extends TestCase
     }
 
     /**
-     * @covers ::extractElements
+     * @covers ::extract
      * @covers ::extractItemsByPattern
      * @dataProvider extractElementsDataProvider
      *
@@ -225,7 +225,7 @@ final class PatternBasedExtractorTest extends TestCase
      */
     public function testExtractElements(string $html, array $expectedElements): void
     {
-        $result = $this->subject->extractElements($html);
+        $result = $this->subject->extract($html);
 
         $this->assertIsArray($result);
         $this->assertSameSize($expectedElements, $result);

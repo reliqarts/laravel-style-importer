@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ReliqArts\StyleImporter\CSS;
 
-interface Ruleset
+interface Extractable
 {
     /**
      * @return string

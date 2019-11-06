@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace ReliqArts\StyleImporter\CSS\Extractor;
 
+use ReliqArts\StyleImporter\CSS\Extractor;
 use ReliqArts\StyleImporter\CSS\MediaBlock;
 use ReliqArts\StyleImporter\Exception\InvalidArgument;
 
-final class MediaBlockExtractor
+final class MediaBlockExtractor implements Extractor
 {
     /**
      * @param string $styles

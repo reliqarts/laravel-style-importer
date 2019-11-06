@@ -6,9 +6,9 @@ namespace ReliqArts\StyleImporter\Tests\Unit\Importer;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
-use ReliqArts\StyleImporter\CSS\RuleExtractor;
-use ReliqArts\StyleImporter\CSS\RuleSet;
-use ReliqArts\StyleImporter\HTML\ElementExtractor;
+use ReliqArts\StyleImporter\CSS\Processor;
+use ReliqArts\StyleImporter\CSS\Ruleset;
+use ReliqArts\StyleImporter\HTML\Extractor;
 use ReliqArts\StyleImporter\Importer;
 use ReliqArts\StyleImporter\Importer\Agent;
 use ReliqArts\StyleImporter\Util\FileAssistant;
@@ -29,14 +29,14 @@ final class AgentTest extends TestCase
     private $activeViewAccessor;
 
     /**
-     * @var ElementExtractor|ObjectProphecy
+     * @var Extractor|ObjectProphecy
      */
     private $htmlExtractor;
 
     /**
-     * @var ObjectProphecy|RuleExtractor
+     * @var ObjectProphecy|Processor
      */
-    private $cssRuleExtractor;
+    private $cssProcessor;
 
     /**
      * @var FileAssistant|ObjectProphecy
@@ -44,7 +44,7 @@ final class AgentTest extends TestCase
     private $fileAssistant;
 
     /**
-     * @var ObjectProphecy|RuleSet
+     * @var ObjectProphecy|Ruleset
      */
     private $ruleSet;
 
@@ -56,15 +56,15 @@ final class AgentTest extends TestCase
     protected function setUp(): void
     {
         $this->activeViewAccessor = $this->prophesize(ViewAccessor::class);
-        $this->htmlExtractor = $this->prophesize(ElementExtractor::class);
-        $this->cssRuleExtractor = $this->prophesize(RuleExtractor::class);
+        $this->htmlExtractor = $this->prophesize(Extractor::class);
+        $this->cssProcessor = $this->prophesize(Processor::class);
         $this->fileAssistant = $this->prophesize(FileAssistant::class);
-        $this->ruleSet = $this->prophesize(RuleSet::class);
+        $this->ruleSet = $this->prophesize(Ruleset::class);
 
         $this->subject = new Agent(
             $this->activeViewAccessor->reveal(),
             $this->htmlExtractor->reveal(),
-            $this->cssRuleExtractor->reveal(),
+            $this->cssProcessor->reveal(),
             $this->fileAssistant->reveal()
         );
     }
@@ -83,7 +83,7 @@ final class AgentTest extends TestCase
             ->willReturn($html);
 
         $this->htmlExtractor
-            ->extractElements($html)
+            ->extract($html)
             ->shouldBeCalledTimes(1)
             ->willReturn($elements);
 
@@ -97,8 +97,8 @@ final class AgentTest extends TestCase
             ->shouldBeCalledTimes(1)
             ->willReturn($styles);
 
-        $this->cssRuleExtractor
-            ->extractRules($styles, $elements)
+        $this->cssProcessor
+            ->getStyles($styles, ...$elements)
             ->shouldBeCalledTimes(1)
             ->willReturn($this->ruleSet);
 

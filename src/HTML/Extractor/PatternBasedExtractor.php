@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace ReliqArts\StyleImporter\HTML\ElementExtractor;
+namespace ReliqArts\StyleImporter\HTML\Extractor;
 
-use ReliqArts\StyleImporter\HTML\ElementExtractor;
+use ReliqArts\StyleImporter\HTML\Extractor;
 
-final class PatternBasedExtractor implements ElementExtractor
+final class PatternBasedExtractor implements Extractor
 {
     private const PATTERN_CLASSES = '#\<\w[^<>]*\sclass=[\"\\\']([\w\s-]+)[\"\\\'][\s\>\/]#';
     private const PATTERN_IDS = '#\<\w[^<>]*\sid=[\"\\\']([\w-]+)[\"\\\'][\s\>\/]\>?#';
@@ -70,7 +70,7 @@ final class PatternBasedExtractor implements ElementExtractor
      *
      * @return array
      */
-    public function extractElements(string $html): array
+    public function extract(string $html): array
     {
         return array_merge(
             $this->extractTags($html),

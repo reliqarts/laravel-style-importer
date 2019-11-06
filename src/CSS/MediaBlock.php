@@ -6,7 +6,7 @@ namespace ReliqArts\StyleImporter\CSS;
 
 use ReliqArts\StyleImporter\Exception\InvalidArgument;
 
-final class MediaBlock
+final class MediaBlock implements Extractable
 {
     public const TOKEN_MEDIA = '@media';
     public const TOKEN_OPENING_BRACKET = '{';
