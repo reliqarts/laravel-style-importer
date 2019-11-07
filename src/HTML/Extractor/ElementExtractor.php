@@ -6,7 +6,7 @@ namespace ReliqArts\StyleImporter\HTML\Extractor;
 
 use ReliqArts\StyleImporter\HTML\Extractor;
 
-final class PatternBasedExtractor implements Extractor
+final class ElementExtractor implements Extractor
 {
     private const PATTERN_CLASSES = '#\<\w[^<>]*\sclass=[\"\\\']([\w\s-]+)[\"\\\'][\s\>\/]#';
     private const PATTERN_IDS = '#\<\w[^<>]*\sid=[\"\\\']([\w-]+)[\"\\\'][\s\>\/]\>?#';

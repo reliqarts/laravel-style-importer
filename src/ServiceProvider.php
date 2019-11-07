@@ -12,6 +12,7 @@ use ReliqArts\Contracts\Logger as ReliqArtsLoggerContract;
 use ReliqArts\ServiceProvider as ReliqArtsServiceProvider;
 use ReliqArts\Services\ConfigProvider as ReliqArtsConfigProvider;
 use ReliqArts\Services\Logger as ReliqArtsLogger;
+use ReliqArts\StyleImporter\CSS\Extractor\FontFaceExtractor;
 use ReliqArts\StyleImporter\CSS\Extractor\ImportExtractor;
 use ReliqArts\StyleImporter\CSS\Extractor\MediaBlockExtractor;
 use ReliqArts\StyleImporter\CSS\Generator as GeneratorContract;
@@ -20,7 +21,7 @@ use ReliqArts\StyleImporter\CSS\Processor as ProcessorContract;
 use ReliqArts\StyleImporter\CSS\Processor\Processor;
 use ReliqArts\StyleImporter\HTML\ClassExtractor;
 use ReliqArts\StyleImporter\HTML\Extractor;
-use ReliqArts\StyleImporter\HTML\Extractor\PatternBasedExtractor as PatternBasedHTMLExtractor;
+use ReliqArts\StyleImporter\HTML\Extractor\ElementExtractor as HTMLExtractor;
 use ReliqArts\StyleImporter\HTML\IDExtractor;
 use ReliqArts\StyleImporter\HTML\TagExtractor;
 use ReliqArts\StyleImporter\Importer\Agent;
@@ -61,10 +62,10 @@ final class ServiceProvider extends ReliqArtsServiceProvider
             )
         );
 
-        $this->app->singleton(ClassExtractor::class, PatternBasedHTMLExtractor::class);
-        $this->app->singleton(IDExtractor::class, PatternBasedHTMLExtractor::class);
-        $this->app->singleton(TagExtractor::class, PatternBasedHTMLExtractor::class);
-        $this->app->singleton(Extractor::class, PatternBasedHTMLExtractor::class);
+        $this->app->singleton(ClassExtractor::class, HTMLExtractor::class);
+        $this->app->singleton(IDExtractor::class, HTMLExtractor::class);
+        $this->app->singleton(TagExtractor::class, HTMLExtractor::class);
+        $this->app->singleton(Extractor::class, HTMLExtractor::class);
         $this->app->singleton(GeneratorContract::class, RuleSetGenerator::class);
         $this->app->singleton(Importer::class, Agent::class);
         $this->app->singleton(
@@ -78,6 +79,7 @@ final class ServiceProvider extends ReliqArtsServiceProvider
             function (): ProcessorContract {
                 return new Processor(
                     resolve(ImportExtractor::class),
+                    resolve(FontFaceExtractor::class),
                     resolve(MediaBlockExtractor::class),
                     resolve(GeneratorContract::class),
                     resolve(LoggerContract::class)

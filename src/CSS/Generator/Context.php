@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace ReliqArts\StyleImporter\CSS\Generator;
 
 use ReliqArts\StyleImporter\CSS\MediaBlock;
-use ReliqArts\StyleImporter\CSS\Rule\ImportRule;
+use ReliqArts\StyleImporter\CSS\Rule\FontFace;
+use ReliqArts\StyleImporter\CSS\Rule\Import;
 
 final class Context
 {
@@ -20,9 +21,14 @@ final class Context
     private $htmlElements;
 
     /**
-     * @var ImportRule[]
+     * @var Import[]
      */
     private $importRules;
+
+    /**
+     * @var FontFace[]
+     */
+    private $fontFaceRules;
 
     /**
      * @var MediaBlock[]
@@ -40,17 +46,30 @@ final class Context
         $this->sanitizedStyles = $sanitizedStyles;
         $this->htmlElements = $htmlElements;
         $this->importRules = [];
+        $this->fontFaceRules = [];
         $this->mediaBlocks = [];
     }
 
     /**
-     * @param ImportRule ...$importRules
+     * @param Import ...$importRules
      *
      * @return self
      */
-    public function withImportRules(ImportRule ...$importRules): self
+    public function withImportRules(Import ...$importRules): self
     {
         $this->importRules = $importRules;
+
+        return $this;
+    }
+
+    /**
+     * @param FontFace ...$fontFaceRules
+     *
+     * @return self
+     */
+    public function withFontFaceRules(FontFace ...$fontFaceRules): self
+    {
+        $this->fontFaceRules = $fontFaceRules;
 
         return $this;
     }
@@ -84,11 +103,19 @@ final class Context
     }
 
     /**
-     * @return ImportRule[]
+     * @return Import[]
      */
     public function getImportRules(): array
     {
         return $this->importRules;
+    }
+
+    /**
+     * @return FontFace[]
+     */
+    public function getFontFaceRules(): array
+    {
+        return $this->fontFaceRules;
     }
 
     /**

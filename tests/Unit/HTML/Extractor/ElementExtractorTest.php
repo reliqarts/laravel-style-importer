@@ -2,23 +2,24 @@
 
 declare(strict_types=1);
 
-namespace ReliqArts\StyleImporter\Tests\Unit\HTML\ElementExtractor;
+namespace ReliqArts\StyleImporter\Tests\Unit\HTML\Extractor;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
-use ReliqArts\StyleImporter\HTML\Extractor\PatternBasedExtractor;
+use ReliqArts\StyleImporter\HTML\Extractor\ElementExtractor;
 
 /**
  * Class PatternBasedExtractorTest.
  *
- * @coversDefaultClass \ReliqArts\StyleImporter\HTML\Extractor\PatternBasedExtractor
+ * @coversDefaultClass \ReliqArts\StyleImporter\HTML\Extractor\ElementExtractor
  *
  * @internal
  */
-final class PatternBasedExtractorTest extends TestCase
+final class ElementExtractorTest extends TestCase
 {
     /**
-     * @var ObjectProphecy|PatternBasedExtractor
+     * @var ElementExtractor|ObjectProphecy
      */
     private $subject;
 
@@ -26,7 +27,7 @@ final class PatternBasedExtractorTest extends TestCase
     {
         parent::setUp();
 
-        $this->subject = new PatternBasedExtractor();
+        $this->subject = new ElementExtractor();
     }
 
     /**
@@ -36,6 +37,8 @@ final class PatternBasedExtractorTest extends TestCase
      *
      * @param string $html
      * @param array  $expectedClasses
+     *
+     * @throws Exception
      */
     public function testExtractClasses(string $html, array $expectedClasses): void
     {
@@ -107,6 +110,8 @@ final class PatternBasedExtractorTest extends TestCase
      *
      * @param string $html
      * @param array  $expectedIds
+     *
+     * @throws Exception
      */
     public function testExtractIds(string $html, array $expectedIds): void
     {
@@ -171,6 +176,8 @@ final class PatternBasedExtractorTest extends TestCase
      *
      * @param string $html
      * @param array  $expectedTags
+     *
+     * @throws Exception
      */
     public function testExtractTags(string $html, array $expectedTags): void
     {
@@ -222,6 +229,8 @@ final class PatternBasedExtractorTest extends TestCase
      *
      * @param string $html
      * @param array  $expectedElements
+     *
+     * @throws Exception
      */
     public function testExtractElements(string $html, array $expectedElements): void
     {

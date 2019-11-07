@@ -1,9 +1,9 @@
 @php
     /* @var \ReliqArts\StyleImporter\ConfigProvider $styleImporterConfigProvider */
     $skipImportVar = $styleImporterConfigProvider->getSkipStyleImportVariableName();
-    $currentViewNameVar = $styleImporterConfigProvider->getCurrentViewNameVariableName();
+    $initialHtmlElements = $initialHtmlElements ?? [];
 @endphp
 
 @if(!($$skipImportVar ?? false))
-    {!! $styleImporter->import($stylesheetUrl, $$currentViewNameVar) !!}
+    {!! $styleImporter->import($stylesheetUrl, ...$initialHtmlElements) !!}
 @endif

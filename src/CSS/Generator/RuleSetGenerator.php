@@ -36,6 +36,7 @@ final class RuleSetGenerator implements Generator
         try {
             $rules = array_merge(
                 $context->getImportRules(),
+                $context->getFontFaceRules(),
                 $this->getRulesForElements($htmlElements, $context->getSanitizedStyles())
             );
 
@@ -105,7 +106,7 @@ final class RuleSetGenerator implements Generator
             }
         }
 
-        return $rules;
+        return array_unique($rules);
     }
 
     /**

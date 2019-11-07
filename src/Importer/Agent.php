@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace ReliqArts\StyleImporter\Importer;
 
-use ReliqArts\StyleImporter\CSS\Exception\RulesetGenerationFailed;
 use ReliqArts\StyleImporter\CSS\Processor;
 use ReliqArts\StyleImporter\CSS\Ruleset;
 use ReliqArts\StyleImporter\Exception\ActiveViewHtmlRetrievalFailed;
@@ -59,16 +58,16 @@ final class Agent implements Importer
 
     /**
      * @param string $stylesheetUrl
+     * @param string ...$initialHtmlElements
      *
      * @throws ActiveViewHtmlRetrievalFailed
-     * @throws RulesetGenerationFailed
      *
      * @return string
      */
-    public function import(string $stylesheetUrl): string
+    public function import(string $stylesheetUrl, string ...$initialHtmlElements): string
     {
         $viewHtml = $this->activeViewAccessor->getViewHTML();
-        $elements = $this->htmlExtractor->extract($viewHtml);
+        $elements = array_merge($initialHtmlElements, $this->htmlExtractor->extract($viewHtml));
         $stylesheet = $this->fileAssistant->getFileContents($stylesheetUrl);
         $cssRules = $this->cssProcessor->getStyles($stylesheet, ...$elements);
 

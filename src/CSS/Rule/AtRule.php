@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace ReliqArts\StyleImporter\CSS\Rule;
 
 use ReliqArts\StyleImporter\CSS\Extractable;
-use ReliqArts\StyleImporter\CSS\Rule as RuleContract;
 
-final class ImportRule implements Extractable, RuleContract
+abstract class AtRule implements Extractable
 {
     /**
      * @var string

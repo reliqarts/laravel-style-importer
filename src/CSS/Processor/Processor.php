@@ -26,6 +26,11 @@ final class Processor implements ProviderContract
     /**
      * @var Extractor
      */
+    private $fontFaceExtractor;
+
+    /**
+     * @var Extractor
+     */
     private $mediaBlockExtractor;
 
     /**
@@ -42,12 +47,14 @@ final class Processor implements ProviderContract
      * Processor constructor.
      *
      * @param Extractor $importExtractor
+     * @param Extractor $fontFaceExtractor
      * @param Extractor $mediaBlockExtractor
      * @param Generator $ruleGenerator
      * @param Logger    $logger
      */
     public function __construct(
         Extractor $importExtractor,
+        Extractor $fontFaceExtractor,
         Extractor $mediaBlockExtractor,
         Generator $ruleGenerator,
         Logger $logger
@@ -56,6 +63,7 @@ final class Processor implements ProviderContract
         $this->mediaBlockExtractor = $mediaBlockExtractor;
         $this->ruleGenerator = $ruleGenerator;
         $this->logger = $logger;
+        $this->fontFaceExtractor = $fontFaceExtractor;
     }
 
     /**
@@ -68,6 +76,7 @@ final class Processor implements ProviderContract
     {
         try {
             $importRules = $this->importExtractor->extract($styles);
+            $fontFaceRules = $this->fontFaceExtractor->extract($styles);
             $mediaBlocks = $this->mediaBlockExtractor->extract($styles);
             $extracted = array_merge($importRules, $mediaBlocks);
             $sanitizedStyles = Sanitizer::sanitizeStyles($this->removeExtractedSections($styles, ...$extracted));
@@ -76,12 +85,13 @@ final class Processor implements ProviderContract
             return $this->ruleGenerator->generate(
                 $generatorContext
                     ->withImportRules(...$importRules)
+                    ->withFontFaceRules(...$fontFaceRules)
                     ->withMediaBlocks(...$mediaBlocks)
             );
         } catch (InvalidArgument | RulesetGenerationFailed $exception) {
             $this->logger->error(
                 sprintf('CSS processing failed; %s', $exception->getMessage()),
-                ['trace' => $exception->getTrace()]
+                ['trace' => $exception->getTraceAsString()]
             );
 
             return new Rules();

@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace ReliqArts\StyleImporter\CSS\Extractor;
 
 use ReliqArts\StyleImporter\CSS\Extractable;
-use ReliqArts\StyleImporter\CSS\Rule\Import;
+use ReliqArts\StyleImporter\CSS\Rule\FontFace;
 
 /**
  * Class ImportExtractor.
  */
-final class ImportExtractor extends SimplePatternExtractor
+final class FontFaceExtractor extends SimplePatternExtractor
 {
-    private const PATTERN = '/(@import[^;]+\;)/';
+    private const PATTERN = '/(@font-face[^}]+\})/';
 
     /**
      * @return string
@@ -29,6 +29,6 @@ final class ImportExtractor extends SimplePatternExtractor
      */
     protected function createExtractable(string $match): Extractable
     {
-        return new Import($match);
+        return new FontFace($match);
     }
 }

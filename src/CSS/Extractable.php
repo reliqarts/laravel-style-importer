@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace ReliqArts\StyleImporter\CSS;
 
-interface Extractable
+interface Extractable extends Rule
 {
-    /**
-     * @return string
-     */
-    public function __toString(): string;
 }
